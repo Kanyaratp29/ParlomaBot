@@ -15,4 +15,4 @@
    
 ------------------------------------
 
-Run the bot by (node .)
+### Run the bot with `node .`
