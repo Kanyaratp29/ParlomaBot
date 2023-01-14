@@ -1,20 +1,27 @@
-const {Client, Collection, Events, GatewayIntentBits, ActivityType} = require('discord.js');
+const {Client, Collection, Events, GatewayIntentBits, ActivityType, Partials} = require('discord.js');
 const fs = require('node:fs');
 const path = require('node:path');
 const { token } = require('./config.json')
+const { DiscordTogether } = require('discord-together');
 
 const client = new Client(
     {
         intents:[
             GatewayIntentBits.Guilds,
             GatewayIntentBits.GuildMessages,
+            GatewayIntentBits.GuildMessageReactions,
             GatewayIntentBits.MessageContent,
             GatewayIntentBits.GuildMembers,
-        ]
+        ],
+		// partials:[
+		// 	Partials.Message,
+		// 	Partials.Reaction,
+		// ]
     }
 )
 
 client.commands = new Collection();
+client.discordTogether = new DiscordTogether(client);
 
 const commandsPath = path.join(__dirname, 'commands');
 const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
@@ -30,18 +37,28 @@ for (const file of commandFiles) {
 	}
 }
 
-const randomnum = () => {
-    return Math.floor(Math.random() * 10);
-}
-
-client.on('messageCreate', msg=>{
+client.on('messageCreate', async (msg) => {
     // if(msg.author.id == '376044245536079894'){
     //     msg.reply('OK');
     // }
     if(msg.content == 'สวัสดี'){
-        msg.reply('ดีจ้า :wave:')
+        await msg.reply('ดีจ้า :wave:')
     }
+    if(msg.content == 'รักน้องบูบู้'){
+		await msg.react('❤️')
+    }
+	if (msg.content === 'ยูทูป') {
+        if(msg.member.voice.channel) {
+            client.discordTogether.createTogetherCode(msg.member.voice.channel.id, 'youtube').then(async invite => {
+                return msg.channel.send(`${invite.code}`);
+            });
+        };
+    };
     // console.log(msg);
+})
+
+client.on('messageReactionAdd', (reaction) => {
+	console.log(reaction);
 })
 
 client.on(Events.InteractionCreate, async interaction => {
@@ -61,6 +78,24 @@ client.on(Events.InteractionCreate, async interaction => {
 		await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
 	}
 });
+
+// const quiz = require('./quiz.json');
+
+// const item = quiz[Math.floor(Math.random() * quiz.length)];
+// const filter = response => {
+// 	return item.answers.some(answer => answer.toLowerCase() === response.content.toLowerCase());
+// };
+
+// interaction.reply({ content: item.question, fetchReply: true })
+// 	.then(() => {
+// 		interaction.channel.awaitMessages({ filter, max: 1, time: 30000, errors: ['time'] })
+// 			.then(collected => {
+// 				interaction.followUp(`${collected.first().author} got the correct answer!`);
+// 			})
+// 			.catch(collected => {
+// 				interaction.followUp('Looks like nobody got the answer this time.');
+// 			});
+// 	});
 
 // client.run(os.getenv('TOKKEN'))
 client.login(token)
