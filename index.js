@@ -54,6 +54,9 @@ client.on('messageCreate', async (msg) => {
             });
         };
     };
+	if(msg.content === 'test'){
+		console.log(msg);
+	}
     // console.log(msg);
 })
 
