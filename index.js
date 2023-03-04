@@ -52,7 +52,10 @@ client.on('messageCreate', async (msg) => {
             client.discordTogether.createTogetherCode(msg.member.voice.channel.id, 'youtube').then(async invite => {
                 return msg.channel.send(`${invite.code}`);
             });
-        };
+        }
+		else{
+			return msg.reply('You not in voice channel.')
+		}
     };
 	if(msg.content === 'test'){
 		console.log(msg);
@@ -107,3 +110,17 @@ client.on('ready', ()=>{
     console.log(`your bot is ready to pair as ${client.user.tag}!`);
     client.user.setActivity('your heart', { type: ActivityType.Listening });
 })
+
+client.on('shardDisconnect', (_, shardId) => {
+	console.log(`Shard ${shardId} disconnected.`);
+	// Disconnect the bot from the voice channel if it is connected
+	const connection = joinVoiceChannel({
+		channelId: voiceChannel.id,
+		guildId: interaction.guildId,
+		adapterCreator: interaction.guild.voiceAdapterCreator,
+	  });
+	if (connection) {
+	  connection.destroy();
+	  console.log('Disconnected from voice channel.');
+	}
+  });
