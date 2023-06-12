@@ -10,7 +10,7 @@ const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('
 for (const file of commandFiles) {
 	try {
         const command = require(`./commands/${file}`);
-        console.log(`Loaded command ${command.name}`);
+        console.log(`Loaded command ${command.data.name}`);
         commands.push(command.data.toJSON());
     } catch (error) {
         console.error(`Error loading command ${file}: ${error}`);

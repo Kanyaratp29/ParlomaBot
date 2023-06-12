@@ -39,6 +39,12 @@ module.exports = {
         return interaction.reply('There was an error joining the voice channel.');
       }
 
+      const connection = joinVoiceChannel({
+        channelId: voiceChannel.id,
+        guildId: interaction.guildId,
+        adapterCreator: interaction.guild.voiceAdapterCreator,
+      });
+
     const url = interaction.options.getString("url");
     console.log('Playing audio file:', url);
     let stream, resource;

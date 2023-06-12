@@ -96,7 +96,7 @@ module.exports = {
           color: '#5865F2',
         },
         customWord: null,
-        timeoutTime: 60000,
+        timeoutTime: 100000,
         winMessage: 'You won! The word was **{word}**.',
         loseMessage: 'You lost! The word was **{word}**.',
         playerOnlyMessage: 'Only {player} can use these buttons.'
