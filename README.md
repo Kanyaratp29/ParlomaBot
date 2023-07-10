@@ -14,9 +14,9 @@
    }
 
 ### And add .env to the folder with 
-MONGODB_URI=mongodb+srv://kanyaratp29:<PASSWORD>@cluster0.3e8pru3.mongodb.net/?retryWrites=true&w=majority
+MONGODB_URI=mongodb+srv://kanyaratp29:\<PASSWORD\>@cluster0.3e8pru3.mongodb.net/?retryWrites=true&w=majority
 <br />
-<sub>replace the PASSWORD with the password of mongo </sub>
+<sub>replace the \<PASSWORD\> with the password of mongo </sub>
    
 ------------------------------------
 
