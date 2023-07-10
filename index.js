@@ -1,8 +1,12 @@
 const {Client, Collection, Events, GatewayIntentBits, ActivityType, Partials} = require('discord.js');
 const fs = require('node:fs');
+const mongoose = require('mongoose');
+require('dotenv').config();
 const path = require('node:path');
 const { token } = require('./config.json')
 const { DiscordTogether } = require('discord-together');
+
+const messageSchema = require('./schemas/message_schema.js');
 
 const client = new Client(
     {
@@ -37,6 +41,17 @@ for (const file of commandFiles) {
 	}
 }
 
+client.login(token)
+
+client.on('ready', ()=>{
+    console.log(`your bot is ready to pair as ${client.user.tag}!`);
+    client.user.setActivity('your heart', { type: ActivityType.Listening });
+
+	mongoose.connect(process.env.MONGODB_URI, {
+		keepAlive: true,
+	});
+});
+
 client.on('messageCreate', async (msg) => {
     // if(msg.author.id == '376044245536079894'){
     //     msg.reply('OK');
@@ -46,6 +61,20 @@ client.on('messageCreate', async (msg) => {
     }
     if(msg.content == 'รักน้องบูบู้'){
 		await msg.react('❤️')
+    }
+    if(msg.content == 'บวก'){
+		await messageSchema.findOneAndUpdate({
+			_id: msg.author.id
+		},{
+			_id: msg.author.id,
+			username: msg.author.username,
+			$inc: {
+				messageCount: 1,
+			}
+		},{
+			upsert: true,
+		})
+		await msg.reply('ก็มาดิ')
     }
 	if (msg.content === 'ยูทูป') {
         if(msg.member.voice.channel) {
@@ -104,12 +133,6 @@ client.on(Events.InteractionCreate, async interaction => {
 // 	});
 
 // client.run(os.getenv('TOKKEN'))
-client.login(token)
-
-client.on('ready', ()=>{
-    console.log(`your bot is ready to pair as ${client.user.tag}!`);
-    client.user.setActivity('your heart', { type: ActivityType.Listening });
-})
 
 client.on('shardDisconnect', (_, shardId) => {
 	console.log(`Shard ${shardId} disconnected.`);
