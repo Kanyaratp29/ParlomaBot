@@ -6,8 +6,6 @@ const path = require('node:path');
 const { token } = require('./config.json')
 const { DiscordTogether } = require('discord-together');
 
-const messageSchema = require('./schemas/message_schema.js');
-
 const client = new Client(
     {
         intents:[
