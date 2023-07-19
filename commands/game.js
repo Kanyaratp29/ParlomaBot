@@ -1,8 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
-const { Snake } = require("discord-gamecord");
-const { Hangman } = require('discord-gamecord');
-const { MatchPairs } = require('discord-gamecord');
-const { Wordle } = require('discord-gamecord');
+const { Snake,Hangman, MatchPairs, Wordle, TwoZeroFourEight, FastType } = require("discord-gamecord");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -11,11 +8,11 @@ module.exports = {
     .addStringOption((option) =>
     option
       .setName("name")
-      .setDescription("The name of game you want to play.")
+      .setDescription("Snake, Hangman, Match, Wordle, 2048, FastType")
       .setRequired(true)
     ),
   async execute(interaction) {
-    const gameName = interaction.options.getString("name");
+    const gameName = interaction.options.getString("name").toLowerCase();
     if(gameName == 'snake'){
       const Game = new Snake({
           message: interaction,
@@ -53,9 +50,9 @@ module.exports = {
           color: '#5865F2'
         },
         hangman: { hat: '🎩', head: '😟', shirt: '👕', pants: '🩳', boots: '👞👞' },
-        customWord: 'Gamecord',
+        // customWord: 'Gamecord',
         timeoutTime: 60000,
-        theme: 'nature',
+        // theme: 'nature',
         winMessage: 'You won! The word was **{word}**.',
         loseMessage: 'You lost! The word was **{word}**.',
         playerOnlyMessage: 'Only {player} can use these buttons.'
@@ -100,6 +97,50 @@ module.exports = {
         winMessage: 'You won! The word was **{word}**.',
         loseMessage: 'You lost! The word was **{word}**.',
         playerOnlyMessage: 'Only {player} can use these buttons.'
+      });
+      
+      Game.startGame();
+      Game.on('gameOver', result => {
+        console.log(result);  // =>  { result... }
+      });
+    }
+    if(gameName == '2048'){
+      const Game = new TwoZeroFourEight({
+        message: interaction,
+        isSlashGame: false,
+        embed: {
+          title: '2048',
+          color: '#5865F2'
+        },
+        emojis: {
+          up: '⬆️',
+          down: '⬇️',
+          left: '⬅️',
+          right: '➡️',
+        },
+        timeoutTime: 60000,
+        buttonStyle: 'PRIMARY',
+        playerOnlyMessage: 'Only {player} can use these buttons.'
+      });
+      
+      Game.startGame();
+      Game.on('gameOver', result => {
+        console.log(result);  // =>  { result... }
+      });
+    }
+    if(gameName == 'fasttype'){
+      const Game = new FastType({
+        message: interaction,
+        isSlashGame: false,
+        embed: {
+          title: 'Fast Type',
+          color: '#5865F2',
+          description: 'You have {time} seconds to type the sentence below.'
+        },
+        timeoutTime: 60000,
+        sentence: 'Some really cool sentence to fast type.',
+        winMessage: 'You won! You finished the type race in {time} seconds with wpm of {wpm}.',
+        loseMessage: 'You lost! You didn\'t type the correct sentence in time.',
       });
       
       Game.startGame();

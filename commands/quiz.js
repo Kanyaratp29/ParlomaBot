@@ -5,7 +5,7 @@ const path = require('path');
 const Quiz = require("../schemas/question_schema.js");
 
 // Load quiz questions from JSON file
-const quizQuestions = JSON.parse(fs.readFileSync(path.join(__dirname, '/data/quiz_questions.json')));
+// const quizQuestions = JSON.parse(fs.readFileSync(path.join(__dirname, '/data/quiz_questions.json')));
 
 module.exports = {
   data: new SlashCommandBuilder()
