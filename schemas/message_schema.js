@@ -15,6 +15,6 @@ const messageSchema = new Schema({
     }
 });
 
-const name = "message-counts";
+const name = "messageSchema";
 
 module.exports = models[name] || model(name, messageSchema);

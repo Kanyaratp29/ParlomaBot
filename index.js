@@ -5,6 +5,7 @@ require('dotenv').config();
 const path = require('node:path');
 const { token } = require('./config.json')
 const { DiscordTogether } = require('discord-together');
+const messageSchema = require("./schemas/message_schema.js");
 
 const client = new Client(
     {
@@ -45,9 +46,9 @@ client.on('ready', ()=>{
     console.log(`your bot is ready to pair as ${client.user.tag}!`);
     client.user.setActivity('your heart', { type: ActivityType.Listening });
 
-	mongoose.connect(process.env.MONGODB_URI, {
-		keepAlive: true,
-	});
+	// mongoose.connect(process.env.MONGODB_URI, {
+	// 	keepAlive: true,
+	// });
 });
 
 client.on('messageCreate', async (msg) => {
@@ -61,18 +62,23 @@ client.on('messageCreate', async (msg) => {
 		await msg.react('❤️')
     }
     if(msg.content == 'บวก'){
-		await messageSchema.findOneAndUpdate({
-			_id: msg.author.id
-		},{
-			_id: msg.author.id,
-			username: msg.author.username,
-			$inc: {
-				messageCount: 1,
-			}
-		},{
-			upsert: true,
-		})
-		await msg.reply('ก็มาดิ')
+		try {
+			await messageSchema.findOneAndUpdate({
+				_id: msg.author.id
+			},{
+				_id: msg.author.id,
+				username: msg.author.username,
+				$inc: {
+					messageCount: 1,
+				}
+			},{
+				upsert: true,
+			})
+			await msg.reply('ก็มาดิ')
+		} catch (error) {
+			console.error("Error occurred during message count:", error);
+			await msg.reply('พังอยู่จ้า')
+		}
     }
 	if (msg.content === 'ยูทูป') {
         if(msg.member.voice.channel) {
