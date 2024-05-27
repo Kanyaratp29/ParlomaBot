@@ -2,6 +2,7 @@
 ### This bot can
 - Online
 - Reply the message
+- Play game
    
 -------------------------------------
 
